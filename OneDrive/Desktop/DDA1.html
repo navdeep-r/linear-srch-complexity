@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Search HW-NAVDEEP R</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- <style> -->
+    
+        3333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333300
+     -->
+    <!-- </style> -->
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Linear Search HW-NAVDEEP R</h1>
+        </div>
+        <div class="lab-section">
+            <h2 class="lab-title">Lab Question 1: Performance Analysis of Linear Search on Best, Average, and Worst Cases</h2>
+            
+            <div class="problem-statement">
+                <h3>Problem Statement:</h3>
+                <p>Write a program to implement the linear search algorithm. Analyze and compare the time taken for:</p>
+                <ul>
+                    <li>Best case (element at START)</li>
+                    <li>Average case (element AT middle)</li>
+                    <li>Worst case (element not present)</li>
+                </ul>
+            </div>
+
+            <div class="instructions">
+                <h3>Instructions:</h3>
+                <ul>
+                    <li>Generate a list of n random integers (e.g., n = 10000)</li>
+                    <li>Measure the time taken for searching the key in each of the three cases</li>
+                    <li>Plot a graph comparing the time taken vs. the case type</li>
+                </ul>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="arraySize1">Array Size (n):</label>
+                    <input type="number" id="arraySize1" value="10000" min="100" max="100000">
+                </div>
+                <button onclick="runTimeAnalysis()" id="timeAnalysisBtn">Run Time Analysis</button>
+            </div>
+
+            <div id="timeResults" class="results" style="display: none;">
+                <h3>Execution Times (ms):</h3>
+                <div id="timeData"></div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="timeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="analysis-output">
+                <h3>Expected Analysis Output:</h3>
+                <div class="complexity-note">
+                    <h4>Time Complexity Analysis:</h4>
+                    <ul>
+                        <li><strong>Best Case - O(1):</strong> Element is found at the first position, requiring only one comparison</li>
+                        <li><strong>Average Case - O(n/2):</strong> Element is found in the middle, requiring approximately n/2 comparisons</li>
+                        <li><strong>Worst Case - O(n):</strong> Element is not present or at the last position, requiring n comparisons</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="lab-section">
+            <h2 class="lab-title">Lab Question 2: Count the Number of Comparisons in Linear Search</h2>
+            
+            <div class="problem-statement">
+                <h3>Problem Statement:</h3>
+                <p>Implement linear search and count the number of comparisons made during the search process. For various input sizes (e.g., n = 100, 500, 1000, 5000, 10000), determine:</p>
+                <ul>
+                    <li>Total comparisons in best, average, and worst cases</li>
+                    <li>Plot the results to show growth of comparisons with input size</li>
+                </ul>
+            </div>
+
+            <div class="instructions">
+                <h3>Instructions:</h3>
+                <ul>
+                    <li>Run your program multiple times with varying input sizes</li>
+                    <li>For each size, simulate best, average, and worst-case conditions</li>
+                    <li>Count and display the number of comparisons made</li>
+                </ul>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="inputSizes">Input Sizes (comma-separated):</label>
+                    <input type="text" id="inputSizes" value="100,500,1000,5000,10000" placeholder="e.g., 100,500,1000">
+                </div>
+                <button onclick="analys()" id="comparisonAnalysisBtn">Run Comparison Analysis</button>
+            </div>
+
+            <div id="comparisonResults" class="results" style="display: none;">
+                <h3>Number of Comparisons for Different Input Sizes:</h3>
+                <div class="table-container">
+                    <table id="comparisonTable">
+                        <thead>
+                            <tr>
+                                <th>Input Size</th>
+                                <th>Best Case</th>
+                                <th>Average Case</th>
+                                <th>Worst Case</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function linearSearchWithCount(arr, key) {
+            let comparisons = 0;
+            for (let i = 0; i < arr.length; i++) {
+                comparisons++;
+                if (arr[i] === key) {
+                    return comparisons;
+                }
+            }
+            return comparisons; 
+        }
+
+        function generateRandomArray(size) {
+            const arr = [];
+            for (let i = 0; i < size; i++) {
+                arr.push(Math.floor(Math.random() * 100000) + 1);
+            }
+            return arr;
+        }
+
+        function runTimeAnalysis() {
+            const btn = document.getElementById('timeAnalysisBtn');
+            const resultsDiv = document.getElementById('timeResults');
+            const dataDiv = document.getElementById('timeData');
+            
+            btn.disabled = true;
+            btn.textContent = 'Running Analysis...';
+            
+            setTimeout(() => {
+                const n = parseInt(document.getElementById('arraySize1').value);
+                const arr = generateRandomArray(n);
+                
+                const keyBest = arr[0];
+                const startBest = performance.now();
+                linearSearchWithCount(arr, keyBest);
+                const timeBest = performance.now() - startBest;
+                
+                const keyAvg = arr[Math.floor(n / 2)];
+                const startAvg = performance.now();
+                linearSearchWithCount(arr, keyAvg);
+                const timeAvg = performance.now() - startAvg;
+                
+                const keyWorst = -1; 
+                const startWorst = performance.now();
+                linearSearchWithCount(arr, keyWorst);
+                const timeWorst = performance.now() - startWorst;
+                
+                dataDiv.innerHTML = `
+                    <p><strong>Best Case:</strong> ${timeBest.toFixed(4)} ms</p>
+                    <p><strong>Average Case:</strong> ${timeAvg.toFixed(4)} ms</p>
+                    <p><strong>Worst Case:</strong> ${timeWorst.toFixed(4)} ms</p>
+                `;
+                
+                resultsDiv.style.display = 'block';
+                
+                createTimeChart([timeBest, timeAvg, timeWorst]);
+                
+                btn.disabled = false;
+                btn.textContent = 'Run Time Analysis';
+            }, 100);
+        }
+
+        function analys() {
+            const btn = document.getElementById('comparisonAnalysisBtn');
+            const resultsDiv = document.getElementById('comparisonResults');
+            const tableBody = document.getElementById('comparisonTableBody');
+            
+            btn.disabled = true;
+            btn.textContent = 'Running Analysis...';
+            
+            setTimeout(() => {
+                const inputSizesStr = document.getElementById('inputSizes').value;
+                const inputSizes = inputSizesStr.split(',').map(s => parseInt(s.trim()));
+                
+                const bestCounts = [];
+                const avgCounts = [];
+                const worstCounts = [];
+                
+                tableBody.innerHTML = '';
+                
+                inputSizes.forEach(size => {
+                    const arr = generateRandomArray(size);
+                    
+                    const compBest = linearSearchWithCount(arr, arr[0]);
+                    bestCounts.push(compBest);
+                    
+                    const compAvg = linearSearchWithCount(arr, arr[Math.floor(size / 2)]);
+                    avgCounts.push(compAvg);
+                    
+                    const compWorst = linearSearchWithCount(arr, -1);
+                    worstCounts.push(compWorst);
+                    
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).textContent = size;
+                    row.insertCell(1).textContent = compBest;
+                    row.insertCell(2).textContent = compAvg;
+                    row.insertCell(3).textContent = compWorst;
+                });
+                
+                resultsDiv.style.display = 'block';
+                
+                createComparisonChart(inputSizes, bestCounts, avgCounts, worstCounts);
+                
+                btn.disabled = false;
+                btn.textContent = 'Run Comparison Analysis';
+            }, 100);
+        }
+        function createTimeChart(times) {
+            const ctx = document.getElementById('timeChart').getContext('2d');
+            
+            if (window.timeChartInstance) {
+                window.timeChartInstance.destroy();
+            }
+            
+            window.timeChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Best Case', 'Average Case', 'Worst Case'],
+                    datasets: [{
+                        label: 'Time Taken (ms)',
+                        data: times,
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(249, 115, 22, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(249, 115, 22, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Linear Search: Time Analysis',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time Taken (ms)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Case Type'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createComparisonChart(sizes, bestCounts, avgCounts, worstCounts) {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            
+            if (window.comparisonChartInstance) {
+                window.comparisonChartInstance.destroy();
+            }
+            
+            window.comparisonChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sizes,
+                    datasets: [{
+                        label: 'Best Case',
+                        data: bestCounts,
+                        borderColor: 'rgba(34, 197, 94, 1)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        fill: false,
+                        tension: 0.1
+                    }, {
+                        label: 'Average Case',
+                        data: avgCounts,
+                        borderColor: 'rgba(249, 115, 22, 1)',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        fill: false,
+                        tension: 0.1
+                    }, {
+                        label: 'Worst Case',
+                        data: worstCounts,
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        fill: false,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Linear Search: Number of Comparisons vs Input Size',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Comparisons'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Input Size (n)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            runTimeAnalysis();
+            analys();
+        });
+    </script>
+</body>
+</html>
